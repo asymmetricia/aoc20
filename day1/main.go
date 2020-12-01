@@ -30,7 +30,7 @@ func main() {
 	}
 
 	for i := range lines {
-		for j := i + 1; j < len(lines); j++ {
+		for j := range lines[i+1:] {
 			if lines[i]+lines[j] == 2020 {
 				log.Printf("%d * %d = %d", lines[i], lines[j], lines[i]*lines[j])
 				os.Exit(0)
