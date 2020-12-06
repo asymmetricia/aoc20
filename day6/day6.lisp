@@ -21,7 +21,9 @@
 
 (format t "part 1: ~a ~%"
   (loop for group in groups
-        sum (1- (/ (length (symbol-plist group)) 2))))
+        sum (loop for (key value) on (symbol-plist group) by #'cddr
+                  unless (eq key 'count)
+                  sum 1)))
 
 (format t "part 2: ~a ~%"
   (loop for group in groups 
