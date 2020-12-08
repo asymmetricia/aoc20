@@ -3,7 +3,7 @@
 (require "asdf")
 (require "uiop")
 
-(defstruct op 
+(defstruct op
   (op "" :type string)
   (val 0 :type number))
 
@@ -14,10 +14,15 @@
           while line
           collect (make-op :op (first words) :val (parse-integer (second words))))))
 
-(defvar seen (make-hash-table))
-
 (defstruct patch addr op)
 
+; run the program given by program (a list of ops) with the given accumulator, pointer, and seen alist
+; a patch may be provided to override one specific instruction
+; run exits if it detects a loop or if ptr points beyond program
+;
+; when run exits, it returns the final accumulator and a reason, currently
+; either the symbol 'loop indicating a loop was found, or nil for normal
+; termination.
 (defun run (program accum ptr seen &optional patch)
   (if (assoc ptr seen)
     (return-from run (values accum 'loop)))
@@ -34,16 +39,19 @@
 
 (format t "~a~%" (run *program* 0 0 nil))
 
-(loop for y from 0 below (length *program*)
-      for op = (elt *program* y)
+(loop for op in *program*
+      for y from 0
       for opcode = (op-op op)
       for val = (op-val op)
-      for patch = (make-patch :addr y :op (make-op :op (cond
-                                                     ((equal opcode "nop") "jmp") 
-                                                     ((equal opcode "jmp") "nop")
-                                                     (t opcode))
-                                                   :val val))
-      do (multiple-value-bind 
+      for patch = (make-patch
+                    :addr y
+                    :op (make-op
+                          :op (cond
+                                ((equal opcode "nop") "jmp")
+                                ((equal opcode "jmp") "nop")
+                                (t opcode))
+                          :val val))
+      do (multiple-value-bind
            (accum reason)
            (run *program* 0 0 nil patch)
-           (unless reason (format t "~a~%" accum))))
+           (unless reason (format t "line:~a accum:~a~%" y accum))))
