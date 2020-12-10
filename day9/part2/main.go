@@ -40,25 +40,22 @@ outerA:
 		break
 	}
 
-	var result []int
-outerB:
-	for i := 0; i < len(nums); i++ {
-		accum := nums[i]
-		for j := i+1; j < len(nums); j++ {
-			accum += nums[j]
-			if accum == invalid {
-				result = nums[i:j]
-				break outerB
-			}
-			if accum > invalid {
-				continue outerB
-			}
+	i, j := 0, 2
+	accum := nums[i] + nums[j-1]
+	for {
+		for accum < invalid {
+			j++
+			accum += nums[j-1]
+		}
+		for accum > invalid {
+			accum -= nums[i]
+			i++
+		}
+		if accum == invalid {
+			break
 		}
 	}
-
-	if result == nil {
-		panic("no contiguous set")
-	}
+	result := nums[i:j]
 	sort.Ints(result)
 	fmt.Println(result[0] + result[len(result)-1])
 }
