@@ -9,6 +9,7 @@ import (
 	gif2 "image/gif"
 	"io/ioutil"
 	"os"
+	"time"
 
 	"github.com/pdbogen/aoc20/colors"
 )
@@ -28,7 +29,7 @@ func render(lines [][]byte) *image.Paletted {
 	const mul = 10
 	const inset = 1
 	ret := image.NewPaletted(image.Rect(0, 0, len(lines[0])*mul, len(lines)*mul), color.Palette{
-		color.Black, colors.Red, colors.Green,
+		color.Black, colors.Red, colors.Green, color.Transparent,
 	})
 
 	red := image.NewUniform(colors.Red)
@@ -55,6 +56,25 @@ func render(lines [][]byte) *image.Paletted {
 	return ret
 }
 
+func optimize(imgs []*image.Paletted) {
+	if len(imgs) < 2 {
+		return
+	}
+	accum := image.NewPaletted(imgs[0].Rect, imgs[0].Palette)
+	draw.Draw(accum, accum.Rect, image.NewUniform(color.Transparent), image.Point{}, draw.Over)
+
+	tr := imgs[0].Palette.Index(color.Transparent)
+	for _, img := range imgs[1:] {
+		for i, v := range img.Pix {
+			if v == accum.Pix[i] {
+				img.Pix[i] = uint8(tr)
+			} else {
+				accum.Pix[i] = img.Pix[i]
+			}
+		}
+	}
+}
+
 func main() {
 	input, err := ioutil.ReadFile("day11.input")
 	if err != nil {
@@ -65,20 +85,23 @@ func main() {
 
 	var changes int
 	gif := &gif2.GIF{
-		Image:    nil,
-		Delay:    nil,
-		Disposal: nil,
+		Image:    []*image.Paletted{render(lines)},
+		Delay:    []int{3},
+		Disposal: []byte{gif2.DisposalNone},
 	}
 	for {
+		lines, changes = run(lines)
+		lines, changes = run(lines)
 		gif.Image = append(gif.Image, render(lines))
 		gif.Delay = append(gif.Delay, 1)
 		gif.Disposal = append(gif.Disposal, gif2.DisposalNone)
-		lines, changes = run(lines)
-		lines, changes = run(lines)
 		if changes == 0 {
 			break
 		}
 	}
+	start := time.Now()
+	optimize(gif.Image)
+	fmt.Printf("optimization took %0.2fs\n", time.Since(start).Seconds())
 
 	fmt.Println(bytes.Count(bytes.Join(lines, nil), []byte("#")))
 

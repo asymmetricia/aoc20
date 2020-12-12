@@ -2,3 +2,5 @@ input
 demo
 *.swp
 aoc.session
+/*.input
+/.idea

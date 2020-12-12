@@ -9,6 +9,7 @@ import (
 	gif2 "image/gif"
 	"io/ioutil"
 	"os"
+	"time"
 
 	"github.com/pdbogen/aoc20/colors"
 )
@@ -55,6 +56,25 @@ func render(lines [][]byte) *image.Paletted {
 	return ret
 }
 
+func optimize(imgs []*image.Paletted) {
+	if len(imgs) < 2 {
+		return
+	}
+	accum := image.NewPaletted(imgs[0].Rect, imgs[0].Palette)
+	draw.Draw(accum, accum.Rect, image.NewUniform(color.Transparent), image.Point{}, draw.Over)
+
+	tr := imgs[0].Palette.Index(color.Transparent)
+	for _, img := range imgs[1:] {
+		for i, v := range img.Pix {
+			if v == accum.Pix[i] {
+				img.Pix[i] = uint8(tr)
+			} else {
+				accum.Pix[i] = img.Pix[i]
+			}
+		}
+	}
+}
+
 func main() {
 	input, err := ioutil.ReadFile("day11.input")
 	if err != nil {
@@ -79,6 +99,9 @@ func main() {
 			break
 		}
 	}
+	start := time.Now()
+	optimize(gif.Image)
+	fmt.Printf("optimization took %0.2fs\n", time.Since(start).Seconds())
 
 	fmt.Println(bytes.Count(bytes.Join(lines, nil), []byte("#")))
 
