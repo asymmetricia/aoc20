@@ -91,10 +91,21 @@ func main() {
 	}
 	for {
 		lines, changes = run(lines)
+		a := render(lines)
 		lines, changes = run(lines)
-		gif.Image = append(gif.Image, render(lines))
-		gif.Delay = append(gif.Delay, 1)
-		gif.Disposal = append(gif.Disposal, gif2.DisposalNone)
+		b := render(lines)
+
+		// fix flashing; set any green pixels in b to green in a
+		green := uint8(b.Palette.Index(colors.Green))
+		for i, v := range b.Pix {
+			if v == green {
+				a.Pix[i] = green
+			}
+		}
+
+		gif.Image = append(gif.Image, a, b)
+		gif.Delay = append(gif.Delay, 3, 3)
+		gif.Disposal = append(gif.Disposal, gif2.DisposalNone, gif2.DisposalNone)
 		if changes == 0 {
 			break
 		}

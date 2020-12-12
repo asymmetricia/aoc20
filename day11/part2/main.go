@@ -29,7 +29,7 @@ func render(lines [][]byte) *image.Paletted {
 	const mul = 10
 	const inset = 1
 	ret := image.NewPaletted(image.Rect(0, 0, len(lines[0])*mul, len(lines)*mul), color.Palette{
-		color.Black, colors.Red, colors.Green,
+		color.Black, colors.Red, colors.Green, color.Transparent,
 	})
 
 	red := image.NewUniform(colors.Red)
@@ -85,16 +85,27 @@ func main() {
 
 	var changes int
 	gif := &gif2.GIF{
-		Image:    nil,
-		Delay:    nil,
-		Disposal: nil,
+		Image:    []*image.Paletted{render(lines)},
+		Delay:    []int{3},
+		Disposal: []byte{gif2.DisposalNone},
 	}
 	for {
-		gif.Image = append(gif.Image, render(lines))
-		gif.Delay = append(gif.Delay, 1)
-		gif.Disposal = append(gif.Disposal, gif2.DisposalNone)
 		lines, changes = run(lines)
+		a := render(lines)
 		lines, changes = run(lines)
+		b := render(lines)
+
+		// fix flashing; set any green pixels in b to green in a
+		green := uint8(b.Palette.Index(colors.Green))
+		for i, v := range b.Pix {
+			if v == green {
+				a.Pix[i] = green
+			}
+		}
+
+		gif.Image = append(gif.Image, a, b)
+		gif.Delay = append(gif.Delay, 3, 3)
+		gif.Disposal = append(gif.Disposal, gif2.DisposalNone, gif2.DisposalNone)
 		if changes == 0 {
 			break
 		}
