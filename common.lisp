@@ -1,3 +1,6 @@
+(require "asdf")
+(require "uiop")
+
 (defun input
   (day)
   (with-open-file (f (concatenate 'string "../" day ".input"))
