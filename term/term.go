@@ -1,6 +1,13 @@
 package term
 
-import "fmt"
+import (
+	"fmt"
+	"image/color"
+)
+
+func ClearLine() {
+	print("\x1b[2K")
+}
 
 func Clear() {
 	print("\x1b[2J")
@@ -16,6 +23,11 @@ func HideCursor() {
 
 func ShowCursor() {
 	print("\x1b[?25h")
+}
+
+func ColorC(color color.Color) {
+	r, g, b, _ := color.RGBA()
+	Color(int(r>>8), int(g>>8), int(b>>8))
 }
 
 func Color(r, g, b int) {
