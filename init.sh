@@ -32,6 +32,7 @@ func main() {
 }
 EOF
 go fmt "$1/part1/main.go"
+git add "$1/part1/main.go"
 
 for part in part1 part2; do
   cat > .idea/runConfigurations/"$1$part".xml <<EOF
