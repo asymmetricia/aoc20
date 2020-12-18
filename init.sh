@@ -34,6 +34,7 @@ EOF
 go fmt "$1/part1/main.go"
 git add "$1/part1/main.go"
 
+mkdir -p .idea/runConfigurations
 for part in part1 part2; do
   cat > .idea/runConfigurations/"$1$part".xml <<EOF
 <component name="ProjectRunConfigurationManager">
