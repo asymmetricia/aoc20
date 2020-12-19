@@ -93,8 +93,3 @@
 
 (format t "Part 1: ~a~%" (hash-table-count (cycles 3 (parse 3 *lines*) 6)))
 (format t "Part 2: ~a~%" (hash-table-count (cycles 4 (parse 4 *lines*) 6)))
-
-;(print-state 3 *initial3*)
-;(print-state 3 (cycle 3 *initial3*))
-; (defun cycle (input)
-; 
