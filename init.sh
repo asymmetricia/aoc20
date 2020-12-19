@@ -34,6 +34,17 @@ EOF
 go fmt "$1/part1/main.go"
 git add "$1/part1/main.go"
 
+cat > "$1/$1.lisp" <<EOF
+#!/usr/bin/sbcl --script
+
+(load "../common.lisp")
+
+(defvar *lines* (input "$1"))
+EOF
+
+chmod +x "$1/$1.lisp"
+git add "$1/$1.lisp"
+
 mkdir -p .idea/runConfigurations
 for part in part1 part2; do
   cat > .idea/runConfigurations/"$1$part".xml <<EOF
