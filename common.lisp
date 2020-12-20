@@ -2,8 +2,8 @@
 (require "uiop")
 
 (defun input
-  (day)
-  (with-open-file (f (concatenate 'string "../" day ".input"))
+  (day &optional ext)
+  (with-open-file (f (concatenate 'string "../" day (or ext ".input")))
     (loop for line = (read-line f nil)
           while line
           collect line)))
