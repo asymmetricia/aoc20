@@ -169,7 +169,8 @@ func main() {
 		}
 	}
 
-	const fps = 100
+	const dps = 4
+	const fps = 48
 	flipped = start
 	anim := &gif.GIF{
 		Image:    []*image.Paletted{render(flipped, minx, maxx, miny, maxy)},
@@ -196,7 +197,7 @@ func main() {
 			intermediate[c] = true
 		}
 
-		perFrame := len(changes) / fps
+		perFrame := len(changes) / (fps / dps)
 		for c, ch := range changes {
 			if ch {
 				intermediate[c] = true
