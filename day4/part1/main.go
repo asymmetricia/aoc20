@@ -1,8 +1,9 @@
 package main
 
 import (
-	"io/ioutil"
 	"strings"
+
+	"github.com/asymmetricia/aoc20/aoc"
 )
 
 type Passport struct {
@@ -14,10 +15,7 @@ func (p Passport) Valid() bool {
 }
 
 func main() {
-	data, err := ioutil.ReadFile("input")
-	if err != nil {
-		panic(err)
-	}
+	data := aoc.Input(2020, 4)
 
 	var pports []Passport
 	var port Passport

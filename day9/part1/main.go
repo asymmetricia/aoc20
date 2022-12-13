@@ -2,16 +2,14 @@ package main
 
 import (
 	"fmt"
-	"io/ioutil"
 	"strconv"
 	"strings"
+
+	"github.com/asymmetricia/aoc20/aoc"
 )
 
 func main() {
-	input, err := ioutil.ReadFile("day9.input")
-	if err != nil {
-		panic(err)
-	}
+	input := aoc.Input(2020, 9)
 	lines := strings.Split(strings.TrimSpace(string(input)), "\n")
 	nums := []int{}
 	for _, line := range lines {
@@ -22,14 +20,14 @@ func main() {
 		nums = append(nums, i)
 	}
 
-	outer:
+outer:
 	for i := 25; i < len(nums); i++ {
-		for j := i-25; j < i; j++ {
-			for k := i-25; k < i; k++ {
+		for j := i - 25; j < i; j++ {
+			for k := i - 25; k < i; k++ {
 				if k == i {
 					continue
 				}
-				if nums[k] + nums[j] == nums[i] {
+				if nums[k]+nums[j] == nums[i] {
 					continue outer
 				}
 			}

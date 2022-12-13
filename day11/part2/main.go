@@ -7,11 +7,11 @@ import (
 	"image/color"
 	"image/draw"
 	gif2 "image/gif"
-	"io/ioutil"
 	"os"
 	"time"
 
-	"github.com/pdbogen/aoc20/colors"
+	"github.com/asymmetricia/aoc20/aoc"
+	"github.com/asymmetricia/aoc20/colors"
 )
 
 const demo1 = `L.LL.LL.LL
@@ -76,54 +76,60 @@ func optimize(imgs []*image.Paletted) {
 }
 
 func main() {
-	input, err := ioutil.ReadFile("day11.input")
-	if err != nil {
-		panic(err)
-	}
+	input := aoc.Input(2020, 11)
+	const renderGif = false
+
 	lines := bytes.Split(bytes.TrimSpace(input), []byte("\n"))
 	//lines = bytes.Split(bytes.TrimSpace([]byte(demo1)), []byte("\n"))
 
 	var changes int
-	gif := &gif2.GIF{
-		Image:    []*image.Paletted{render(lines)},
-		Delay:    []int{3},
-		Disposal: []byte{gif2.DisposalNone},
+	gif := &gif2.GIF{}
+	if renderGif {
+		gif.Image = append(gif.Image, render(lines))
+		gif.Delay = append(gif.Delay, 3)
+		gif.Disposal = append(gif.Disposal, gif2.DisposalNone)
 	}
+
 	for {
 		lines, changes = run(lines)
-		a := render(lines)
-		lines, changes = run(lines)
-		b := render(lines)
+		if renderGif {
+			a := render(lines)
+			lines, changes = run(lines)
+			b := render(lines)
 
-		// fix flashing; set any green pixels in b to green in a
-		green := uint8(b.Palette.Index(colors.Green))
-		for i, v := range b.Pix {
-			if v == green {
-				a.Pix[i] = green
+			//fix flashing; set any green pixels in b to green in a
+			green := uint8(b.Palette.Index(colors.Green))
+			for i, v := range b.Pix {
+				if v == green {
+					a.Pix[i] = green
+				}
 			}
-		}
 
-		gif.Image = append(gif.Image, a, b)
-		gif.Delay = append(gif.Delay, 3, 3)
-		gif.Disposal = append(gif.Disposal, gif2.DisposalNone, gif2.DisposalNone)
+			gif.Image = append(gif.Image, a, b)
+			gif.Delay = append(gif.Delay, 3, 3)
+			gif.Disposal = append(gif.Disposal, gif2.DisposalNone, gif2.DisposalNone)
+		}
 		if changes == 0 {
 			break
 		}
 	}
-	start := time.Now()
-	optimize(gif.Image)
-	fmt.Printf("optimization took %0.2fs\n", time.Since(start).Seconds())
+
+	if renderGif {
+		start := time.Now()
+		optimize(gif.Image)
+		fmt.Printf("optimization took %0.2fs\n", time.Since(start).Seconds())
+
+		out, err := os.OpenFile("day11pt2.gif", os.O_WRONLY|os.O_CREATE|os.O_TRUNC, os.FileMode(0644))
+		if err != nil {
+			panic(err)
+		}
+		if err := gif2.EncodeAll(out, gif); err != nil {
+			panic(err)
+		}
+		out.Close()
+	}
 
 	fmt.Println(bytes.Count(bytes.Join(lines, nil), []byte("#")))
-
-	out, err := os.OpenFile("day11pt2.gif", os.O_WRONLY|os.O_CREATE|os.O_TRUNC, os.FileMode(0644))
-	if err != nil {
-		panic(err)
-	}
-	if err := gif2.EncodeAll(out, gif); err != nil {
-		panic(err)
-	}
-	out.Close()
 }
 
 func run(lines [][]byte) ([][]byte, int) {

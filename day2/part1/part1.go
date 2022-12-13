@@ -1,11 +1,12 @@
 package main
 
 import (
-	"bufio"
+	"bytes"
 	"io"
-	"os"
 	"strconv"
 	"strings"
+
+	"github.com/asymmetricia/aoc20/aoc"
 )
 
 type Rule struct {
@@ -61,12 +62,8 @@ func (r Rule) Test(s string) bool {
 }
 
 func main() {
-	f, err := os.Open("input")
-	if err != nil {
-		panic(err)
-	}
 	var valids int
-	rdr := bufio.NewReader(f)
+	rdr := bytes.NewBuffer(aoc.Input(2020, 2))
 	for {
 		line, err := rdr.ReadString('\n')
 		if err == io.EOF {

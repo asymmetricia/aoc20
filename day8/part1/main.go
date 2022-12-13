@@ -2,10 +2,11 @@ package main
 
 import (
 	"fmt"
-	"io/ioutil"
-	"os"
+	"log"
 	"strconv"
 	"strings"
+
+	"github.com/asymmetricia/aoc20/aoc"
 )
 
 type CPU struct {
@@ -17,7 +18,6 @@ type CPU struct {
 
 func (c *CPU) Run() {
 	c.seen = map[int]bool{}
-	//in := bufio.NewReader(os.Stdin)
 	for c.Pointer >= 0 && c.Pointer < len(c.Program) {
 		fmt.Printf("A %d P %d\n", c.Accumulator, c.Pointer)
 		fmt.Println(c.Program[c.Pointer].String())
@@ -26,11 +26,7 @@ func (c *CPU) Run() {
 		}
 		c.seen[c.Pointer] = true
 		c.Program[c.Pointer].Operate(c)
-		//in.ReadString('\n')
 	}
-	fmt.Println("loop")
-	os.Exit(1)
-	//panic(fmt.Sprintf("ptr %d out of range", c.Pointer))
 }
 
 type Operator interface {
@@ -68,10 +64,7 @@ func (j Jmp) String() string {
 }
 
 func main() {
-	input, err := ioutil.ReadFile("day8.input")
-	if err != nil {
-		panic(err)
-	}
+	input := aoc.Input(2020, 8)
 	lines := strings.Split(strings.TrimSpace(string(input)), "\n")
 	fmt.Println(lines)
 	var cpu CPU
@@ -93,4 +86,5 @@ func main() {
 		}
 	}
 	cpu.Run()
+	log.Print(cpu.Accumulator)
 }

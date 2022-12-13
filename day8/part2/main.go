@@ -3,9 +3,10 @@ package main
 import (
 	"errors"
 	"fmt"
-	"io/ioutil"
 	"strconv"
 	"strings"
+
+	"github.com/asymmetricia/aoc20/aoc"
 )
 
 type CPU struct {
@@ -76,10 +77,7 @@ func (j Jmp) String() string {
 }
 
 func main() {
-	input, err := ioutil.ReadFile("day8.input")
-	if err != nil {
-		panic(err)
-	}
+	input := aoc.Input(2020, 8)
 	lines := strings.Split(strings.TrimSpace(string(input)), "\n")
 	fmt.Println(lines)
 	var cpu CPU

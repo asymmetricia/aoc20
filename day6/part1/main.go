@@ -1,15 +1,13 @@
 package main
 
 import (
-	"io/ioutil"
 	"strings"
+
+	"github.com/asymmetricia/aoc20/aoc"
 )
 
 func main() {
-	f, err := ioutil.ReadFile("input")
-	if err != nil {
-		panic(err)
-	}
+	f := aoc.Input(2020, 6)
 	lines := strings.Split(strings.TrimSpace(string(f)), "\n")
 
 	sum := 0

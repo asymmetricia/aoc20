@@ -2,17 +2,15 @@ package main
 
 import (
 	"fmt"
-	"io/ioutil"
 	"sort"
 	"strconv"
 	"strings"
+
+	"github.com/asymmetricia/aoc20/aoc"
 )
 
 func main() {
-	input, err := ioutil.ReadFile("day10.input")
-	if err != nil {
-		panic(err)
-	}
+	input := aoc.Input(2020, 10)
 
 	lines := strings.Split(strings.TrimSpace(string(input)), "\n")
 	var jolts []int

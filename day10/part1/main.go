@@ -2,10 +2,11 @@ package main
 
 import (
 	"fmt"
-	"io/ioutil"
 	"sort"
 	"strconv"
 	"strings"
+
+	"github.com/asymmetricia/aoc20/aoc"
 )
 
 const demo1 = `16
@@ -21,10 +22,7 @@ const demo1 = `16
 4`
 
 func main() {
-	input, err := ioutil.ReadFile("day10.input")
-	if err != nil {
-		panic(err)
-	}
+	input := aoc.Input(2020, 10)
 	//var input = demo1
 	lines := strings.Split(strings.TrimSpace(string(input)), "\n")
 	fmt.Println(lines)

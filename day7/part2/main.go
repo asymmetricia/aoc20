@@ -2,9 +2,10 @@ package main
 
 import (
 	"fmt"
-	"io/ioutil"
 	"strconv"
 	"strings"
+
+	"github.com/asymmetricia/aoc20/aoc"
 )
 
 type rule struct {
@@ -13,10 +14,7 @@ type rule struct {
 }
 
 func main() {
-	input, err := ioutil.ReadFile("day7.input")
-	if err != nil {
-		panic(err)
-	}
+	input := aoc.Input(2020, 7)
 
 	lines := strings.Split(strings.TrimSpace(string(input)), "\n")
 

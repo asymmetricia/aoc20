@@ -2,15 +2,13 @@ package main
 
 import (
 	"fmt"
-	"io/ioutil"
 	"strings"
+
+	"github.com/asymmetricia/aoc20/aoc"
 )
 
 func main() {
-	terrain, err := ioutil.ReadFile("input")
-	if err != nil {
-		panic(err)
-	}
+	terrain := aoc.Input(2020, 3)
 
 	var accum int = 1
 	lines := strings.Split(strings.TrimSpace(string(terrain)), "\n")

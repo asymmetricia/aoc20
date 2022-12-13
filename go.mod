@@ -1,4 +1,4 @@
-module github.com/pdbogen/aoc20
+module github.com/asymmetricia/aoc20
 
 go 1.15
 

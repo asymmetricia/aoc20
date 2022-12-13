@@ -2,8 +2,9 @@ package main
 
 import (
 	"fmt"
-	"io/ioutil"
 	"strings"
+
+	"github.com/asymmetricia/aoc20/aoc"
 )
 
 func procFL(min, max int) (int, int) {
@@ -35,10 +36,7 @@ func seatId(s string) int {
 }
 
 func main() {
-	file, err := ioutil.ReadFile("input")
-	if err != nil {
-		panic(err)
-	}
+	file := aoc.Input(2020, 5)
 	max := 0
 	for _, pass := range strings.Split(strings.TrimSpace(string(file)), "\n") {
 		id := seatId(pass)

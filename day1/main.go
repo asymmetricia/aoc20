@@ -1,18 +1,20 @@
 package main
 
 import (
-	"bufio"
+	"bytes"
 	"errors"
 	"io"
 	"log"
 	"os"
 	"strconv"
 	"strings"
+
+	"github.com/asymmetricia/aoc20/aoc"
 )
 
 func main() {
 	var lines []int
-	reader := bufio.NewReader(os.Stdin)
+	reader := bytes.NewBuffer(aoc.Input(2020, 1))
 	for {
 		str, err := reader.ReadString('\n')
 		if errors.Is(err, io.EOF) {
@@ -29,12 +31,13 @@ func main() {
 		lines = append(lines, number)
 	}
 
-	for i := range lines {
-		for j := range lines[i+1:] {
-			if lines[i]+lines[j] == 2020 {
-				log.Printf("%d * %d = %d", lines[i], lines[j], lines[i]*lines[j])
+	for i, iV := range lines {
+		for _, jV := range lines[i:] {
+			if iV+jV == 2020 {
+				log.Printf("%d * %d = %d", iV, jV, iV*jV)
 				os.Exit(0)
 			}
 		}
 	}
+	log.Fatal("no result")
 }
